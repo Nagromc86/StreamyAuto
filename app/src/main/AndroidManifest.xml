@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Car App Library : app de navigation avec accès à la surface -->
+    <!-- Car App Library : app de navigation avec acces a la surface -->
     <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
 
@@ -53,5 +53,9 @@
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
+
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="1" />
     </application>
 </manifest>
