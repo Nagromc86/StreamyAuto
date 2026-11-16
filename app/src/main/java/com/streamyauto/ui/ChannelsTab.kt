@@ -47,14 +47,14 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Aucun compte Xtream configuré.", style = MaterialTheme.typography.titleMedium)
+            Text("Aucun compte Xtream configure.", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(16.dp))
             Button(onClick = onAddAccount) { Text("Ajouter un compte") }
         }
         return
     }
 
-    // Quand on tape une recherche, on charge automatiquement "Toutes les chaînes"
+    // Quand on tape une recherche, on charge automatiquement "Toutes les chaines"
     LaunchedEffect(query) {
         if (query.isNotBlank() && vm.openedCategory == null) {
             vm.openCategory(MainViewModel.ALL_CATEGORY)
@@ -62,7 +62,7 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        // Sélecteur de compte (utile en multi-comptes)
+        // Selecteur de compte (utile en multi-comptes)
         if (accounts.size > 1) {
             Row(
                 modifier = Modifier
@@ -88,7 +88,7 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            label = { Text("Rechercher une chaîne") },
+            label = { Text("Rechercher une chaine") },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,10 +99,10 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
         val isSearching = query.isNotBlank()
 
         if (category == null && !isSearching) {
-            // Mode normal : liste des catégories
+            // Mode normal : liste des categories
             CategoryList(vm)
         } else {
-            // Mode recherche ou catégorie ouverte
+            // Mode recherche ou categorie ouverte
             if (!isSearching) {
                 BackHandler { vm.closeCategory() }
             }
@@ -131,7 +131,7 @@ private fun LoadingOrError(vm: MainViewModel, content: @Composable () -> Unit) {
         ) {
             Text(error, color = MaterialTheme.colorScheme.error)
             Spacer(Modifier.height(16.dp))
-            Button(onClick = { vm.retry() }) { Text("Réessayer") }
+            Button(onClick = { vm.retry() }) { Text("Reessayer") }
         }
         else -> content()
     }
@@ -166,7 +166,7 @@ private fun ChannelList(
     Column(Modifier.fillMaxSize()) {
         if (showBackButton) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = { vm.closeCategory() }) { Text("← Catégories") }
+                TextButton(onClick = { vm.closeCategory() }) { Text("<- Categories") }
                 Text(
                     text = vm.openedCategory?.category_name ?: "",
                     style = MaterialTheme.typography.titleSmall,
@@ -185,7 +185,7 @@ private fun ChannelList(
 
             if (filtered.isEmpty() && query.isNotBlank() && !vm.loading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Aucune chaîne trouvée pour « $query »")
+                    Text("Aucune chaine trouvee pour \"$query\"")
                 }
             } else {
                 LazyColumn(Modifier.fillMaxSize()) {
