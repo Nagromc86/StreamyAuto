@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
     val accounts by vm.accounts.collectAsState()
     val favorites by vm.favorites.collectAsState()
+    var query by remember { mutableStateOf("") }
 
     if (accounts.isEmpty()) {
         Column(
@@ -50,6 +52,13 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
             Button(onClick = onAddAccount) { Text("Ajouter un compte") }
         }
         return
+    }
+
+    // Quand on tape une recherche, on charge automatiquement "Toutes les chaînes"
+    LaunchedEffect(query) {
+        if (query.isNotBlank() && vm.openedCategory == null) {
+            vm.openCategory(MainViewModel.ALL_CATEGORY)
+        }
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -75,12 +84,35 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
             }
         }
 
+        // Barre de recherche globale (toujours visible)
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            label = { Text("Rechercher une chaîne") },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+
         val category = vm.openedCategory
-        if (category == null) {
+        val isSearching = query.isNotBlank()
+
+        if (category == null && !isSearching) {
+            // Mode normal : liste des catégories
             CategoryList(vm)
         } else {
-            BackHandler { vm.closeCategory() }
-            ChannelList(vm, favorites = favorites)
+            // Mode recherche ou catégorie ouverte
+            if (!isSearching) {
+                BackHandler { vm.closeCategory() }
+            }
+            ChannelList(
+                vm = vm,
+                favorites = favorites,
+                query = query,
+                showBackButton = !isSearching,
+                onClearSearch = { query = "" }
+            )
         }
     }
 }
@@ -124,56 +156,65 @@ private fun CategoryList(vm: MainViewModel) {
 }
 
 @Composable
-private fun ChannelList(vm: MainViewModel, favorites: List<com.streamyauto.data.model.Favorite>) {
-    var query by remember { mutableStateOf("") }
-
+private fun ChannelList(
+    vm: MainViewModel,
+    favorites: List<com.streamyauto.data.model.Favorite>,
+    query: String,
+    showBackButton: Boolean,
+    onClearSearch: () -> Unit
+) {
     Column(Modifier.fillMaxSize()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = { vm.closeCategory() }) { Text("← Catégories") }
-            Text(
-                text = vm.openedCategory?.category_name ?: "",
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        if (showBackButton) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { vm.closeCategory() }) { Text("← Catégories") }
+                Text(
+                    text = vm.openedCategory?.category_name ?: "",
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
-        OutlinedTextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text("Rechercher") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        )
-        LoadingOrError(vm) {
-            val filtered = if (query.isBlank()) vm.channels
-            else vm.channels.filter { it.name.contains(query.trim(), ignoreCase = true) }
 
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(filtered, key = { "${it.accountId}:${it.streamId}" }) { ch ->
-                    val fav = vm.isFavorite(ch, favorites)
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { vm.play(PlayItem(ch.name, ch.streamUrl, ch.icon)) }
-                            .padding(start = 16.dp, end = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = ch.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        TextButton(onClick = { vm.toggleFavorite(ch) }) {
+        LoadingOrError(vm) {
+            val filtered = if (query.isBlank()) {
+                vm.channels
+            } else {
+                vm.channels.filter { it.name.contains(query.trim(), ignoreCase = true) }
+            }
+
+            if (filtered.isEmpty() && query.isNotBlank() && !vm.loading) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Aucune chaîne trouvée pour « $query »")
+                }
+            } else {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    items(filtered, key = { "\( {it.accountId}: \){it.streamId}" }) { ch ->
+                        val fav = vm.isFavorite(ch, favorites)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { vm.play(PlayItem(ch.name, ch.streamUrl, ch.icon)) }
+                                .padding(start = 16.dp, end = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
-                                if (fav) "★" else "☆",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = if (fav) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurface
+                                text = ch.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
                             )
+                            TextButton(onClick = { vm.toggleFavorite(ch) }) {
+                                Text(
+                                    if (fav) "★" else "☆",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = if (fav) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                         }
+                        HorizontalDivider()
                     }
-                    HorizontalDivider()
                 }
             }
         }
