@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Logo StreamyAuto : volant dont le moyeu est un bouton lecture -->
+<!-- Logo StreamyAuto : utilitaire dont la carrosserie est un écran -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="6"
-        android:pathData="M28,54 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
     <path android:fillColor="#FFFFFF"
-        android:pathData="M29,51 h14 v6 h-14z M65,51 h14 v6 h-14z M51,65 h6 v14 h-6z" />
+        android:pathData="M22,71 L22,44 Q22,35 31,35 L69,35 Q75,35 78,41 L83,53 Q89,54 89,61 L89,71 Z" />
+    <path android:fillColor="#2A1B3D"
+        android:pathData="M31,40 h38 a4,4 0 0,1 4,4 v18 a4,4 0 0,1 -4,4 h-38 a4,4 0 0,1 -4,-4 v-18 a4,4 0 0,1 4,-4z" />
+    <path android:fillColor="#FF5A4E"
+        android:pathData="M45,46.5 L56,53 L45,59.5 Z" />
+    <path android:fillColor="#2A1B3D"
+        android:pathData="M76,40 L77.5,40 Q78.5,40 79,41.2 L83,52 L76,52 Z" />
+    <path android:fillColor="#2A1B3D"
+        android:pathData="M85.5,58 h1 a1,1 0 0,1 1,1 v1 a1,1 0 0,1 -1,1 h-1 a1,1 0 0,1 -1,-1 v-1 a1,1 0 0,1 1,-1z" />
+    <path android:fillColor="#2A1B3D" android:strokeColor="#FFFFFF" android:strokeWidth="2.5"
+        android:pathData="M27.5,72 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0" />
     <path android:fillColor="#FFFFFF"
-        android:pathData="M42,54 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
-    <path android:fillColor="#E8394F"
-        android:pathData="M50.5,47.5 L61,54 L50.5,60.5 Z" />
+        android:pathData="M33.2,72 a2.8,2.8 0 1,0 5.6,0 a2.8,2.8 0 1,0 -5.6,0" />
+    <path android:fillColor="#2A1B3D" android:strokeColor="#FFFFFF" android:strokeWidth="2.5"
+        android:pathData="M67.5,72 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M73.2,72 a2.8,2.8 0 1,0 5.6,0 a2.8,2.8 0 1,0 -5.6,0" />
 </vector>
