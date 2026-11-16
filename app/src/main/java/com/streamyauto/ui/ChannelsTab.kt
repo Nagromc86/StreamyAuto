@@ -182,7 +182,10 @@ private fun ChannelList(
                 }
             } else {
                 LazyColumn(Modifier.fillMaxSize()) {
-                    items(filtered, key = { ch -> "\( {ch.accountId}: \){ch.streamId}" }) { ch ->
+                    items(
+                        items = filtered,
+                        key = { ch -> ch.accountId.toString() + ":" + ch.streamId.toString() }
+                    ) { ch ->
                         val fav = vm.isFavorite(ch, favorites)
                         Row(
                             modifier = Modifier
