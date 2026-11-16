@@ -54,7 +54,6 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
         return
     }
 
-    // Quand on tape une recherche, on charge automatiquement "Toutes les chaines"
     LaunchedEffect(query) {
         if (query.isNotBlank() && vm.openedCategory == null) {
             vm.openCategory(MainViewModel.ALL_CATEGORY)
@@ -62,7 +61,6 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        // Selecteur de compte (utile en multi-comptes)
         if (accounts.size > 1) {
             Row(
                 modifier = Modifier
@@ -84,7 +82,6 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
             }
         }
 
-        // Barre de recherche globale (toujours visible)
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
@@ -99,10 +96,8 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
         val isSearching = query.isNotBlank()
 
         if (category == null && !isSearching) {
-            // Mode normal : liste des categories
             CategoryList(vm)
         } else {
-            // Mode recherche ou categorie ouverte
             if (!isSearching) {
                 BackHandler { vm.closeCategory() }
             }
@@ -110,8 +105,7 @@ fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
                 vm = vm,
                 favorites = favorites,
                 query = query,
-                showBackButton = !isSearching,
-                onClearSearch = { query = "" }
+                showBackButton = !isSearching
             )
         }
     }
@@ -160,8 +154,7 @@ private fun ChannelList(
     vm: MainViewModel,
     favorites: List<com.streamyauto.data.model.Favorite>,
     query: String,
-    showBackButton: Boolean,
-    onClearSearch: () -> Unit
+    showBackButton: Boolean
 ) {
     Column(Modifier.fillMaxSize()) {
         if (showBackButton) {
@@ -185,11 +178,11 @@ private fun ChannelList(
 
             if (filtered.isEmpty() && query.isNotBlank() && !vm.loading) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Aucune chaine trouvee pour \"$query\"")
+                    Text("Aucune chaine trouvee")
                 }
             } else {
                 LazyColumn(Modifier.fillMaxSize()) {
-                    items(filtered, key = { "\( {it.accountId}: \){it.streamId}" }) { ch ->
+                    items(filtered, key = { ch -> "\( {ch.accountId}: \){ch.streamId}" }) { ch ->
                         val fav = vm.isFavorite(ch, favorites)
                         Row(
                             modifier = Modifier
