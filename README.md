@@ -21,7 +21,17 @@ l'onglet **Releases** (`StreamyAuto-<n>.apk`).
 - Dès que la voiture roule, la vidéo est coupée et le son continue.
 - Si la voiture ne transmet pas sa vitesse, la lecture reste en audio seul.
 
-## État du prototype
+## Utilisation
 
-- Les favoris Android Auto sont une liste de démonstration (flux de test Mux).
-- Les écrans téléphone (comptes Xtream, chaînes, favoris) sont à brancher.
+Une seule application, deux affichages :
+
+- **Téléphone** : onglet *Comptes* (ajout d'un compte Xtream Codes, bouton *Tester*),
+  onglet *Chaînes* (catégories, recherche, ☆ pour ajouter aux favoris, appui pour lire),
+  onglet *Favoris* (ordre ▲▼, suppression ✕).
+- **Android Auto** : les 12 premiers favoris, dans l'ordre choisi sur le téléphone.
+  Lecteur avec précédent / lecture-pause / suivant / fermer.
+
+Si une chaîne ne se lance pas, change le format du compte (HLS `.m3u8` ou MPEG-TS `.ts`).
+Pour changer de format, supprime le compte et ajoute-le à nouveau.
+
+Note : les identifiants Xtream sont stockés en clair dans la base locale de l'app.

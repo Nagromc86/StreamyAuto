@@ -9,7 +9,7 @@ interface XtreamApi {
     suspend fun authenticate(
         @Query("username") username: String,
         @Query("password") password: String
-    ): Map<String, @JvmSuppressWildcards Any>
+    ): Map<String, @JvmSuppressWildcards Any?>
 
     @GET("player_api.php")
     suspend fun getLiveCategories(
@@ -27,15 +27,16 @@ interface XtreamApi {
     ): List<XtreamStream>
 }
 
+// Champs nullables : les panneaux Xtream ne sont pas tous cohérents
 data class XtreamCategory(
-    val category_id: String,
-    val category_name: String
+    val category_id: String?,
+    val category_name: String?
 )
 
 data class XtreamStream(
-    val num: Int,
-    val name: String,
-    val stream_type: String,
+    val num: Int?,
+    val name: String?,
+    val stream_type: String?,
     val stream_id: Int,
     val stream_icon: String?,
     val category_id: String?

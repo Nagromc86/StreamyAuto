@@ -9,7 +9,9 @@ data class Account(
     val name: String,
     val server: String,
     val username: String,
-    val password: String
+    val password: String,
+    /** Extension des flux live : "m3u8" (HLS) ou "ts" (MPEG-TS). */
+    val streamFormat: String = "m3u8"
 )
 
 @Entity(tableName = "channels")

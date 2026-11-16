@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icône simple : un bouton lecture blanc -->
+<!-- Logo StreamyAuto : volant dont le moyeu est un bouton lecture -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M44,36 L72,54 L44,72 Z" />
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="6"
+        android:pathData="M28,54 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M29,51 h14 v6 h-14z M65,51 h14 v6 h-14z M51,65 h6 v14 h-6z" />
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M42,54 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0" />
+    <path android:fillColor="#E8394F"
+        android:pathData="M50.5,47.5 L61,54 L50.5,60.5 Z" />
 </vector>

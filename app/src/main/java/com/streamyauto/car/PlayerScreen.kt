@@ -15,7 +15,10 @@ import androidx.car.app.SurfaceCallback
 import androidx.car.app.SurfaceContainer
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
+import androidx.car.app.model.CarIcon
 import androidx.car.app.model.Template
+import androidx.core.graphics.drawable.IconCompat
+import com.streamyauto.R
 import androidx.car.app.navigation.model.MessageInfo
 import androidx.car.app.navigation.model.NavigationTemplate
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -36,8 +39,12 @@ import com.streamyauto.playback.StreamyPlaybackService
  */
 class PlayerScreen(
     carContext: CarContext,
-    private val favorite: Favorite
+    private val favorites: List<Favorite>,
+    startIndex: Int
 ) : Screen(carContext) {
+
+    private var index = startIndex.coerceIn(0, (favorites.size - 1).coerceAtLeast(0))
+    private val favorite: Favorite get() = favorites[index]
 
     private val player get() = PlayerHolder.get(carContext)
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -83,11 +90,7 @@ class PlayerScreen(
                 carContext.getCarService(AppManager::class.java)
                     .setSurfaceCallback(surfaceCallback)
 
-                // URL de test si streamUrl vide
-                val url = favorite.streamUrl.ifBlank {
-                    "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-                }
-                PlayerHolder.playUrl(carContext, url, favorite.name, favorite.icon)
+                playCurrent()
                 gate.start()
             }
 
@@ -102,6 +105,21 @@ class PlayerScreen(
             }
         })
     }
+
+    private fun playCurrent() {
+        PlayerHolder.playUrl(carContext, favorite.streamUrl, favorite.name, favorite.icon)
+    }
+
+    private fun skip(delta: Int) {
+        if (favorites.size < 2) return
+        index = (index + delta + favorites.size) % favorites.size
+        playCurrent()
+        if (!videoAttached) mainHandler.postDelayed({ drawAudioOnlyScreen() }, 300)
+        invalidate()
+    }
+
+    private fun icon(resId: Int): CarIcon =
+        CarIcon.Builder(IconCompat.createWithResource(carContext, resId)).build()
 
     private fun updateVideoBinding() {
         val surface = currentSurface ?: return
@@ -159,23 +177,28 @@ class PlayerScreen(
     }
 
     override fun onGetTemplate(): Template {
+        // Barre de navigation : 4 actions max, une seule avec texte → icônes
         val actionStrip = ActionStrip.Builder()
             .addAction(
-                Action.Builder()
-                    .setTitle("Play/Pause")
-                    .setOnClickListener {
-                        if (player.isPlaying) player.pause() else player.play()
-                    }
-                    .build()
+                Action.Builder().setIcon(icon(R.drawable.ic_car_previous))
+                    .setOnClickListener { skip(-1) }.build()
             )
             .addAction(
-                Action.Builder()
-                    .setTitle("Fermer")
+                Action.Builder().setIcon(icon(R.drawable.ic_car_play_pause))
+                    .setOnClickListener {
+                        if (player.isPlaying) player.pause() else player.play()
+                    }.build()
+            )
+            .addAction(
+                Action.Builder().setIcon(icon(R.drawable.ic_car_next))
+                    .setOnClickListener { skip(+1) }.build()
+            )
+            .addAction(
+                Action.Builder().setIcon(icon(R.drawable.ic_car_close))
                     .setOnClickListener {
                         player.stop()
                         screenManager.pop()
-                    }
-                    .build()
+                    }.build()
             )
             .build()
 
