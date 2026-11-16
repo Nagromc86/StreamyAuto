@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.text.Normalizer
 
 @Composable
 fun ChannelsTab(vm: MainViewModel, onAddAccount: () -> Unit) {
@@ -173,7 +174,7 @@ private fun ChannelList(
             val filtered = if (query.isBlank()) {
                 vm.channels
             } else {
-                vm.channels.filter { it.name.contains(query.trim(), ignoreCase = true) }
+                normalize(query.trim()).let { q -> vm.channels.filter { normalize(it.name).contains(q) } }
             }
 
             if (filtered.isEmpty() && query.isNotBlank() && !vm.loading) {
@@ -216,3 +217,9 @@ private fun ChannelList(
         }
     }
 }
+
+/** Minuscules sans accents : « tele » trouve « Télé ». */
+private fun normalize(text: String): String =
+    Normalizer.normalize(text, Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+        .lowercase()

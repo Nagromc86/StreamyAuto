@@ -6,9 +6,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Car App Library : app de navigation avec acces a la surface -->
+    <!-- Car App Library : app de navigation avec accès à la surface -->
     <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+
+    <!-- Vitesse du véhicule (barrière d'arrêt) : Android Auto / Automotive -->
+    <uses-permission android:name="com.google.android.gms.permission.CAR_SPEED" />
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
 
     <application
         android:name=".StreamyApp"
@@ -54,8 +58,9 @@
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
 
+        <!-- Niveau 3 requis pour l'écoute de la vitesse -->
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
-            android:value="1" />
+            android:value="3" />
     </application>
 </manifest>

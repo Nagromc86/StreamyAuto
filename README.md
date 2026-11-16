@@ -28,7 +28,10 @@ Une seule application, deux affichages :
 - **Téléphone** : onglet *Comptes* (ajout d'un compte Xtream Codes, bouton *Tester*),
   onglet *Chaînes* (catégories, recherche, ☆ pour ajouter aux favoris, appui pour lire),
   onglet *Favoris* (ordre ▲▼, suppression ✕).
-- **Android Auto** : les 12 premiers favoris, dans l'ordre choisi sur le téléphone.
+- **Android Auto, mode audio** (APK installée normalement + « Sources inconnues ») :
+  entrée média StreamyAuto, onglet *Favoris*, précédent/suivant, commandes au volant.
+- **Android Auto, lecteur vidéo** (nécessite une installation via Google Play, par ex.
+  le partage interne d'applications) : les 12 premiers favoris, dans l'ordre choisi sur le téléphone.
   Lecteur avec précédent / lecture-pause / suivant / fermer.
 
 Si une chaîne ne se lance pas, change le format du compte (HLS `.m3u8` ou MPEG-TS `.ts`).

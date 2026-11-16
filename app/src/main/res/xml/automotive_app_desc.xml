@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <automotiveApp>
+    <!-- Lecteur vidéo (Car App Library) : nécessite une installation via Google Play -->
     <uses name="template" />
+    <!-- Mode audio (app média) : fonctionne avec « Sources inconnues » -->
+    <uses name="media" />
 </automotiveApp>
