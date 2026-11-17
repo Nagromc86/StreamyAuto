@@ -45,6 +45,12 @@
                 android:resource="@xml/update_paths" />
         </provider>
 
+        <!-- Logos des favoris pour Android Auto (mode audio) -->
+        <provider
+            android:name=".artwork.ArtworkProvider"
+            android:authorities="${applicationId}.artwork"
+            android:exported="true" />
+
         <!-- Media Service -->
         <service
             android:name=".playback.StreamyPlaybackService"

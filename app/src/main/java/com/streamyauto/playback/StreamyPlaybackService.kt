@@ -1,9 +1,11 @@
 package com.streamyauto.playback
 
+import android.os.Bundle
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.session.LibraryResult
+import androidx.media3.session.MediaConstants
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
@@ -12,6 +14,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import com.streamyauto.StreamyApp
+import com.streamyauto.artwork.ArtworkProvider
 import com.streamyauto.data.model.Favorite
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +26,8 @@ import kotlinx.coroutines.launch
  * Service Media3 partagé :
  * - notification et lecture en arrière-plan sur le téléphone ;
  * - mode audio Android Auto (app média) : un onglet « Favoris » avec les
- *   12 premiers favoris, précédent/suivant entre favoris, commandes au volant.
+ *   12 premiers favoris en grille avec le logo de la chaîne, précédent/suivant
+ *   entre favoris, commandes au volant.
  */
 class StreamyPlaybackService : MediaLibraryService() {
 
@@ -73,6 +77,11 @@ class StreamyPlaybackService : MediaLibraryService() {
                 MediaMetadata.Builder()
                     .setTitle(fav.name)
                     .setArtist("StreamyAuto")
+                    .apply {
+                        if (!fav.icon.isNullOrBlank()) {
+                            setArtworkUri(ArtworkProvider.favoriteUri(this@StreamyPlaybackService, fav.id))
+                        }
+                    }
                     .setIsBrowsable(false)
                     .setIsPlayable(true)
                     .build()
@@ -87,9 +96,22 @@ class StreamyPlaybackService : MediaLibraryService() {
                     .setTitle(title)
                     .setIsBrowsable(true)
                     .setIsPlayable(false)
+                    .setExtras(gridStyle())
                     .build()
             )
             .build()
+
+    /** Demande à Android Auto d'afficher les éléments en tuiles plutôt qu'en liste. */
+    private fun gridStyle() = Bundle().apply {
+        putInt(
+            MediaConstants.EXTRAS_KEY_CONTENT_STYLE_PLAYABLE,
+            MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
+        )
+        putInt(
+            MediaConstants.EXTRAS_KEY_CONTENT_STYLE_BROWSABLE,
+            MediaConstants.EXTRAS_VALUE_CONTENT_STYLE_GRID_ITEM
+        )
+    }
 
     private inner class LibrarySessionCallback : MediaLibrarySession.Callback {
 
@@ -99,7 +121,13 @@ class StreamyPlaybackService : MediaLibraryService() {
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<MediaItem>> =
             SettableFuture.create<LibraryResult<MediaItem>>().apply {
-                set(LibraryResult.ofItem(folder(ROOT_ID, "StreamyAuto"), params))
+                val rootParams = LibraryParams.Builder()
+                    .setExtras(Bundle(params?.extras ?: Bundle()).apply { putAll(gridStyle()) })
+                    .setOffline(params?.isOffline ?: false)
+                    .setRecent(params?.isRecent ?: false)
+                    .setSuggested(params?.isSuggested ?: false)
+                    .build()
+                set(LibraryResult.ofItem(folder(ROOT_ID, "StreamyAuto"), rootParams))
             }
 
         override fun onGetChildren(

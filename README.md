@@ -31,7 +31,7 @@ Une seule application, deux affichages :
 - **Android Auto, mode audio** (APK installée normalement + « Sources inconnues ») :
   entrée média StreamyAuto, onglet *Favoris*, précédent/suivant, commandes au volant.
 - **Android Auto, lecteur vidéo** (nécessite une installation via Google Play, par ex.
-  le partage interne d'applications) : les 12 premiers favoris, dans l'ordre choisi sur le téléphone.
+  le partage interne d'applications) : les premiers favoris (jusqu'à 12) en tuiles avec le logo de la chaîne, dans l'ordre choisi sur le téléphone.
   Lecteur avec précédent / lecture-pause / suivant / fermer.
 
 Si une chaîne ne se lance pas, change le format du compte (HLS `.m3u8` ou MPEG-TS `.ts`).
