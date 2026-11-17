@@ -13,12 +13,32 @@ android {
         applicationId = "com.streamyauto"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        // Numéro de build GitHub Actions = numéro de la Release (build-N)
+        val runNumber = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
+        versionCode = runNumber
+        versionName = "1.$runNumber"
+    }
+
+    // Clé de signature fixe : indispensable pour installer une mise à jour
+    // par-dessus la version précédente. Clé et mot de passe dans les secrets GitHub
+    // SIGNING_KEYSTORE_B64 et SIGNING_PASSWORD ; sans eux, signature debug.
+    val signingPassword = System.getenv("SIGNING_PASSWORD")
+    val keystoreFile = rootProject.file("signing/streamy.jks")
+    if (!signingPassword.isNullOrBlank() && keystoreFile.exists()) {
+        signingConfigs {
+            create("streamy") {
+                storeFile = keystoreFile
+                storePassword = signingPassword
+                keyAlias = "streamy"
+                keyPassword = signingPassword
+            }
+        }
+        buildTypes.getByName("debug").signingConfig = signingConfigs.getByName("streamy")
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {

@@ -70,6 +70,9 @@ fun AccountsTab(vm: MainViewModel) {
         }
 
         AccountForm(vm)
+
+        Spacer(Modifier.height(32.dp))
+        UpdateSection()
     }
 
     toDelete?.let { account ->
